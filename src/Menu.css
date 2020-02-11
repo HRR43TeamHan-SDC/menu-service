@@ -1,0 +1,168 @@
+.restaurant-title {
+  font-size: 48px;
+  font-family: BrandonText;
+  font-weight: 700;
+  background-color: #fff;
+  padding: 24px 0 24px 0;
+  border-bottom: 1px solid #d8d9db;
+}
+
+.menu-and-nav {
+  position: relative;
+  max-height: 500px;
+  transition: max-height 0.2s;
+  overflow: hidden;
+  border-bottom: 1px solid #d8d9db;
+  padding-bottom: 66px;
+}
+
+.menu-main {
+  color: #2d333f;
+  background-color: white;
+  font-family: BrandonText;
+  max-width: 640px;
+}
+
+.menu-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.menu-nav {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid #d8d9db;
+  border-bottom: 1px solid #d8d9db;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.menu-nav-item {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 9px 16px 9px 16px;
+  margin: 6px 12px 6px 0;
+  border: 1px solid #d8d9db;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-transform: none;
+  overflow: visible;
+  user-select: none;
+}
+
+.menu-nav-item-selected {
+  border: 2px solid #da3743;
+  padding: 8px 15px 8px 15px;
+  outline: none;
+}
+
+.menu-menu-description {
+  font-size: 16px;
+  padding-top: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #d8d9db;
+  margin-bottom: 12px;
+}
+
+.menu-section {
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #d8d9db;
+}
+
+.menu-section-title {
+  font-size: 16px;
+  font-weight: bold;
+  padding-bottom: 12px;
+}
+
+.menu-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+}
+
+.menu-item {
+  font-size:14px;
+  font-weight: normal;
+  width: 47%;
+  min-width: 47%;
+  display: inline-block;
+  padding-bottom:16px;
+}
+
+.menu-item-title {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 8px;
+  padding-right: 16px;
+}
+
+.menu-item-title-name {
+  display: inline-block;
+}
+
+.menu-item-description {
+  padding-right: 16px;
+}
+
+.menu-collapse {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width:100%;
+}
+
+.menu-collapse1 {
+  background-image: linear-gradient(to top,#fff,rgba(255,255,255,0));
+  height: 200px;
+  width:100%;
+}
+.menu-collapse2 {
+  background-color: white;
+  height: 60px;
+  width: 100%;
+}
+
+.container1{
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.menu-view {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 0 12px 0;
+  text-align: center;
+  width: 200px;
+  border: 1px solid #d8d9db;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  outline-color: #da3743;
+}
+
+.menu-view:hover {
+  /* border: 2px solid #da3743; */
+  outline-width: 1px;
+  outline-style: solid;
+  outline-color: #da3743;
+}
+
+.full-view {
+  /* height: auto; */
+  max-height: 5000px;
+  transition: max-height 0.5s;
+}

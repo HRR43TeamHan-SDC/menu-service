@@ -1,0 +1,18 @@
+{
+  "testRegex": "((\\.|/*.)(spec))\\.js?$",
+  "preset": "jest-puppeteer",
+  "modulePaths": [
+    "__mocks__"
+  ],
+  "moduleNameMapper":  {
+    "\\.(css|sass|scss)$": "styleMock.js",
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "fileMock.js"
+  },
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "/public/"
+  ],
+  "setupFilesAfterEnv": [
+    "<rootDir>/jest.setup.js"
+  ]
+}
