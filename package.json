@@ -13,6 +13,11 @@
     }
   },
   "scripts": {
+    "seed:files": "node ./database/threadedseeder.js",
+    "load:postgres": "node ./database/postgres/loadPostgres.js",
+    "start:postgres": "node ./server/postgres/index.js",
+    "load:neo4j": "node ./database/new4j/loadNeo4j.js",
+    "start:neo4j": "node ./server/neo4j/index.js",
     "start": "node ./server/index.js",
     "start:dev": "nodemon ./server/index.js",
     "build": "webpack",
@@ -34,6 +39,8 @@
     "babel-loader": "^8.0.6",
     "cors": "^2.8.5",
     "css-loader": "^3.4.2",
+    "csv-parser": "^2.3.2",
+    "csv-writer": "^1.6.0",
     "dotenv": "^8.2.0",
     "es6-promise": "^4.2.8",
     "express": "^4.17.1",
@@ -49,8 +56,10 @@
     "mongo": "^0.1.0",
     "mongoose": "^5.8.9",
     "mysql": "^2.18.0",
+    "neo4j-driver": "^4.0.1",
     "node": "^13.6.0",
     "nodemon": "^2.0.2",
+    "postgres": "^1.0.2",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -75,7 +84,7 @@
     "puppeteer": "^2.1.0"
   },
   "version": "1.0.0",
-  "main": ".eslintrc.js",
+  "main": "server/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hackreactor/hrr43-front-end-capstone.git"

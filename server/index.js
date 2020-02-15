@@ -31,6 +31,49 @@ app.get('/gettitle/:id', (req, res) => {
   });
 });
 
+app.post('/api/restaurant/', (req, res) => {
+  console.log(`POST requested at /api/restaurant}`);
+  db.postRestaurant(req.body, (err, data) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send(err)
+    } else {
+      res.status(201).send(`Successful POST`);
+    }
+  })
+});
+
+app.route('/api/restaurant/:id')
+.put((req, res) => {
+  console.log(`PUT requested at /api/restaurant/${req.params.id}`)
+  db.putRestaurant(req.body, (err, data) => {
+    res.send(`PUT ${data}`)
+  })
+})
+.delete((req, res) => {
+  console.log(`DELETE requested at /api/restaurant/${req.params.id}`)
+  db.deleteRestaurant(req.params.id, (err, data) => {
+    if (err) {
+      console.error(err);
+    }
+    res.send(`DELETE ${data}`)
+  })
+})
+
+app.route('/api/restaurant/:restid/menu/:menuid')
+  .put((req, res) => {
+    console.log(`PUT requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    db.putRestaurantMenu(req.params.id, (err, data) => {
+      res.send(`PUT requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    })
+  })
+  .delete((req, res) => {
+    console.log(`DELETE requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    db.deleteRestaurantMenu(req.params.id, (err, data) => {
+      res.send(`DELETE requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    })
+  });
+
 const port = process.env.MENU_PORT || 8000;
 
 app.listen(port, () => {
