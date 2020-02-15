@@ -9,6 +9,7 @@ mongoose.connect('mongodb://localhost/menus', {
   useCreateIndex: true,
   useFindAndModify: false,
 });
+let startTime = process.hrtime();
 
 // Helper Functions
 const randomItems = () => Math.floor(Math.random() * 6) + 4;
@@ -16,7 +17,9 @@ const randomSections = () => Math.floor(Math.random() * 3) + 1;
 
 // create 100 records
 const records = [];
-for (let i = 0; i < 100; i += 1) {
+
+for (let i = 0; i < 1000; i += 1) {
+  console.log('Creating Record', i)
   records[i] = {
     id: i + 1,
     restaurant: faker.random.words(),
@@ -60,17 +63,27 @@ for (let i = 0; i < 100; i += 1) {
 }
 
 const Restaurants = mongoose.model('restaurants', restaurantSchema);
-
+processTime = process.hrtime(startTime);
+    minSecNsTime = []
+    minSecNsTime[0] = Math.floor(processTime[0] / 60)
+    minSecNsTime[1] = processTime[0] % 60;
+    minSecNsTime[2] = processTime[1];
+    console.log(`Completed array in ${minSecNsTime}`);
 // remove all records and add all records in the array
 Restaurants.remove({}, (err1) => {
   if (err1) {
-    return console.log(err1);
+    return console.error(err1);
   }
-  Restaurants.collection.insert(records, (err2) => {
+  Restaurants.collection.insertMany(records, (err2) => {
     if (err2) {
-      return console.log(err2);
+      return console.error(err2);
     }
-    console.log('Complete');
+    processTime = process.hrtime(startTime);
+    minSecNsTime = []
+    minSecNsTime[0] = Math.floor(processTime[0] / 60)
+    minSecNsTime[1] = processTime[0] % 60;
+    minSecNsTime[2] = processTime[1];
+    console.log(`Completed insert in ${minSecNsTime}`);
     return process.exit(0);
   });
   return null;

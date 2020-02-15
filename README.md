@@ -26,12 +26,12 @@ Menu Service Module
 
 
 ### API Endpoints
-| Action |     Endpoint     | Method | Description                                      |
-|--------|------------------|--------|--------------------------------------------------|
-| Create | /api/menu        | POST   | Create a new restaurant                          |
-| Read   | /api/menu/:ID    | GET    | Read menus of a provided restaurant              |
-| Update | /api/menu/:ID    | PUT    | Swap or add menus for a provided restaurant      |
-| Delete | /api/menu/:ID    | DELETE | Remove a provided restaurant from the database   |
+| Action |       Endpoint       | Method | Description                                      |
+|--------|----------------------|--------|--------------------------------------------------|
+| Create | /api/restaurant      | POST   | Create a new restaurant                          |
+| Read   | /api/menu/:ID        | GET    | Read menus of a provided restaurant              |
+| Update | /api/restaurant/:ID  | PUT    | Swap or add menus for a provided restaurant      |
+| Delete | /api/restaurant/:ID  | DELETE | Remove a provided restaurant from the database   |
 
 
 ### Running tests
