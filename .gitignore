@@ -1,1 +1,11 @@
+# Ignore node modules folder
 node_modules
+
+# generated CSV files
+database/datasets
+
+# newrelic settings file and logs
+newrelic*
+
+# jest generated coverage files
+coverage/

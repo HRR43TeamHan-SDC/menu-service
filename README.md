@@ -32,6 +32,7 @@ Menu Service Module
 | Read   | /api/menu/:ID        | GET    | Read menus of a provided restaurant              |
 | Update | /api/restaurant/:ID  | PUT    | Swap or add menus for a provided restaurant      |
 | Delete | /api/restaurant/:ID  | DELETE | Remove a provided restaurant from the database   |
+hr
 
 
 ### Running tests

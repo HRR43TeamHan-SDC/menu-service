@@ -1,0 +1,27 @@
+config:
+  target: 'http://localhost:8001'
+  phases:
+    - duration: 30
+      arrivalRate: 10
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+  defaults:
+    headers:
+      x-my-service-auth: '987401838271002188298567'
+scenarios:
+  - flow:
+    - get:
+        url: "/getmenu/10"
+    - get:
+        url: "/getmenu/100"
+    - get:
+        url: "/getmenu/1000"
+    - get:
+        url: "/getmenu/10000"
+    - get:
+        url: "/getmenu/100000"
+    - get:
+        url: "/getmenu/1000000"
+    - get:
+        url: "/getmenu/10000000"
