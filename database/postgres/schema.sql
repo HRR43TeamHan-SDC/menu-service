@@ -1,7 +1,7 @@
- DROP TABLE items;
- DROP TABLE sections;
- DROP TABLE menus;
- DROP TABLE restaurants;
+DROP TABLE items;
+DROP TABLE sections;
+DROP TABLE menus;
+DROP TABLE restaurants;
 
 
 -- Table: "Restaurants".restaurants
@@ -37,11 +37,11 @@ CREATE INDEX fki_menus_restaurant_id_fkey
     ON menus USING btree
     (restaurant_id ASC NULLS LAST)
     TABLESPACE pg_default;
-
+/*
 CREATE UNIQUE INDEX pki_menus_id_pkey
     ON menus USING btree
     (id ASC NULLS LAST)
-    TABLESPACE pg_default;
+    TABLESPACE pg_default; */
 
 
 
@@ -61,11 +61,11 @@ CREATE INDEX fki_sections_menu_id_fkey
     ON sections USING btree
     (menu_id ASC NULLS LAST)
     TABLESPACE pg_default;
-
+/*
 CREATE UNIQUE INDEX pki_sections_id_pkey
     ON sections USING btree
     (id ASC NULLS LAST)
-    TABLESPACE pg_default;
+    TABLESPACE pg_default; */
 
 
 
@@ -87,8 +87,8 @@ CREATE INDEX fki_items_section_id_fkey
     ON items USING btree
     (section_id ASC NULLS LAST)
     TABLESPACE pg_default;
-
+/*
 CREATE UNIQUE INDEX pki_items_id_pkey
     ON items USING btree
     (id ASC NULLS LAST)
-    TABLESPACE pg_default;
+    TABLESPACE pg_default; */

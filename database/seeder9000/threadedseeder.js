@@ -2,7 +2,7 @@ const { fork } = require('child_process');
 const os = require('os');
 const concat = require('concat');
 const fs = require('fs');
-
+const path = require('path')
 let cpuCount = os.cpus().length;
 let homer = {};
 
@@ -10,7 +10,7 @@ let homer = {};
 // https://www.npmjs.com/package/free-memory
 
 
-// cpuCount = 2; // uncomment to test other cpu amounts
+ cpuCount = 1; // uncomment to test other cpu amounts
 
 const priAmt = 10000000
 // You can set the percentage of cpus that will be used to calculate thread count
@@ -30,7 +30,6 @@ fs.writeFile('./database/postgres/loadPostgres.sql', '', (err) => {
 })
 
 for (let i = 1; i <= maxThreads; i++) {
-
   homer[i] = fork('./database/seeder9000/datacreator.js');
   homer[i].send({
     id: i,
@@ -46,20 +45,21 @@ for (let i = 1; i <= maxThreads; i++) {
     if (message.seed === 'restaurants' && message.status === 'done') {
       restCSSArray.push(i);
     if (restCSSArray.length === maxThreads) {
+      restCSSArray.sort();
       restCSSArray.forEach((thread) => {
-        fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY restaurants (description, title) FROM '/home/jordan/HackReactor/SDC/menu-service/database/datasets/restaurants${thread}.csv' CSV HEADER;\n`, (err) => {
+        fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY restaurants (description, title) FROM '${path.join(__dirname,`../../database/datasets/restaurants${thread}.csv`)}' CSV HEADER;\n`, (err) => {
           if (err) {
             throw err;
           }
-          fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY menus (restaurant_id, description, title) FROM '/home/jordan/HackReactor/SDC/menu-service/database/datasets/menus${thread}.csv' CSV HEADER;\n`, (err) => {
+          fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY menus (restaurant_id, description, title) FROM '${path.join(__dirname,`../../database/datasets/menus${thread}.csv`)}' CSV HEADER;\n`, (err) => {
             if (err) {
               throw err;
             }
-            fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY sections (menu_id, title) FROM '/home/jordan/HackReactor/SDC/menu-service/database/datasets/sections${thread}.csv' CSV HEADER;\n`, (err) => {
+            fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY sections (menu_id, title) FROM '${path.join(__dirname,`../../database/datasets/sections${thread}.csv`)}' CSV HEADER;\n`, (err) => {
               if (err) {
                 throw err;
               }
-              fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY items (section_id, description, title, price) FROM '/home/jordan/HackReactor/SDC/menu-service/database/datasets/items${thread}.csv' CSV HEADER;\n`, (err) => {
+              fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY items (section_id, description, title, price) FROM '${path.join(__dirname,`../../database/datasets/items${thread}.csv`)}' CSV HEADER;\n`, (err) => {
                 if (err) {
                   throw err;
                 }

@@ -17,9 +17,10 @@ let sentence = "",
 // receive message from master process
 process.on('message', async (message) => {
   howMany = message.howMany;
-  // process 1 @ 10 records = startID 1
-  // process 2 @ 10 records = startID 11
-  // process 3 @ 10 records = startID 21 ... et cetera
+  // Refactoring to make the id the processID*recordAmt
+  // process 1 @ 1000 records = startID 1
+  // process 2 @ 1000 records = startID 1001
+  // process 3 @ 1000 records = startID 2001 ... et cetera
   const startID = (howMany * (message.id - 1)) + 1;
   console.log('process-message🤘', message);
 
@@ -82,7 +83,7 @@ process.on('message', async (message) => {
       for (let i = 0; i <= limit && recordAmt.restaurants < howMany; i++) {
 
         dataArray.restaurants.push({
-          // id: recordAmt.restaurants + startID, // 8 bytes
+          // id: recordAmt.restaurants * message.id, // 8 bytes
           description: faker.lorem.sentence(), // 2 * length so roughly 200bytes
           title: faker.lorem.word(), // 2 * length so roughly 50bytes
         });
@@ -91,7 +92,7 @@ process.on('message', async (message) => {
         // loop to create random amount of menus for current restaurant
         // ------------------------------------------------------------
         let menuAmt = Math.round(Math.random() * 3) + 1;
-        //menuAmt = 1
+        // menuAmt = 3
         for (let j = 0; j < menuAmt; j++) {
 
           dataArray.menus.push({
@@ -104,24 +105,24 @@ process.on('message', async (message) => {
           // loop to create random amount of sections for current menu
           // -----------------------------------------------------------
           let sectionsAmt = Math.round(Math.random() * 2) + 1;
-          //sectionsAmt = 1
+          // sectionsAmt = 2
           for (let k = 0; k < sectionsAmt; k++) {
             dataArray.sections.push({
               // id: startID + recordAmt.sections,
-              menu_id: startID + recordAmt.menus + j, // 8 bytes
-              //menu_id: recordAmt.restaurants + startID + recordAmt.menus, // 8 bytes
+              // menu_id: startID + recordAmt.menus + j, // 8 bytes
+              menu_id: startID + recordAmt.menus, // 8 bytes
               // description: faker.lorem.sentence(), // 2 * length so roughly 200bytes
               title: faker.lorem.word(), // 2 * length so roughly 50bytes
             })
             // ----------------------------------------------------------------
             // loop to create random amount of items
             // ----------------------------------------------------------------
-            let itemsAmt = Math.round(Math.random() * 5) + 1;
-            //itemsAmt = 1
+            let itemsAmt = Math.round(Math.random() * 10) + 1;
+            // itemsAmt = 5
             for (let l = 0; l < itemsAmt; l++) {
               dataArray.items.push({
-                //section_id: recordAmt.restaurants + startID + recordAmt.sections, // 8 bytes
-                section_id: startID + recordAmt.sections + l,
+                section_id: startID + recordAmt.sections, // 8 bytes
+                // section_id: startID + recordAmt.sections + l,
                 description: faker.lorem.sentence(), // 2 * length so roughly 200bytes
                 title: faker.lorem.word(), // 2 * length so roughly 50bytes
                 price: `$${faker.commerce.price()}`,

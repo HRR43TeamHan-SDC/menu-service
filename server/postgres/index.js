@@ -1,77 +1,87 @@
+require('newrelic');
 var express = require('express');
-var app = express();
-
-const db = require('./../database/postgres/');
+const db = require('./../../database/postgres/');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
 app.use(cors());
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', '*');
   next();
 });
 
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
+
+app.use('/bundle.js', express.static(path.resolve(__dirname, '../../public/bundle.js')));
+
+app.use('/:id', express.static(path.resolve(__dirname, '../../public')));
 
 app.get('/getmenu/:id', (req, res) => {
-  console.log(`menu requesting id = ${req.params.id}`);
-  db.getRestaurantMenu(req.params.id, (restaurant) => {
-    res.status(200).json(restaurant);
+  //console.log(`menu requesting id = ${req.params.id}`);
+  db.getRestaurantMenu(req.params.id, (err, result) => {
+    if (err) throw err;
+
+    res.status(200).json(result);
   });
 });
 
 app.get('/gettitle/:id', (req, res) => {
   console.log(`title requesting id = ${req.params.id}`);
-  db.getRestaurantTitle(req.params.id, (restaurant) => {
+  db.getRestaurantTitle(req.params.id, (err, result) => {
+    if (err) {
+      res.status(500).send('Something horrible happened')
+    }
     console.log(req.headers);
     res.set({ 'Access-Control-Allow-Origin': '*' });
-    res.status(200).json(restaurant);
+    res.status(200).json(result);
   });
 });
 
 app.post('/api/restaurant/', (req, res) => {
   console.log(`POST requested at /api/restaurant}`);
-  db.postRestaurant(req.body, (err, data) => {
-    if(err) {
-      console.error(err);
-      res.status(500).send(err)
-    } else {
-      res.status(201).send(`Successful POST`);
-    }
-  })
+  // db.postRestaurant(req.body, (err, data) => {
+  //   if(err) {
+  //     console.error(err);
+  //     res.status(500).send(err)
+  //   } else {
+  //     res.status(201).send(`Successful POST`);
+  //   }
+  // })
 });
 
 app.route('/api/restaurant/:id')
 .put((req, res) => {
-  console.log(`PUT requested at /api/restaurant/${req.params.id}`)
-  db.putRestaurant(req.body, (err, data) => {
-    res.send(`PUT ${data}`)
-  })
+  // console.log(`PUT requested at /api/restaurant/${req.params.id}`)
+  // db.putRestaurant(req.body, (err, data) => {
+  //   res.send(`PUT ${data}`)
+  // })
 })
 .delete((req, res) => {
   console.log(`DELETE requested at /api/restaurant/${req.params.id}`)
-  db.deleteRestaurant(req.params.id, (err, data) => {
-    if (err) {
-      console.error(err);
-    }
-    res.send(`DELETE ${data}`)
-  })
+  // db.deleteRestaurant(req.params.id, (err, data) => {
+  //   if (err) {
+  //     console.error(err);
+  //   }
+  //   res.send(`DELETE ${data}`)
+  // })
 })
 
 app.route('/api/restaurant/:restid/menu/:menuid')
   .put((req, res) => {
-    console.log(`PUT requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
-    db.putRestaurantMenu(req.params.id, (err, data) => {
-      res.send(`PUT requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
-    })
+    // console.log(`PUT requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    // db.putRestaurantMenu(req.params.id, (err, data) => {
+    //   res.send(`PUT requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    // })
   })
   .delete((req, res) => {
     console.log(`DELETE requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
-    db.deleteRestaurantMenu(req.params.id, (err, data) => {
-      res.send(`DELETE requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
-    })
+    // db.deleteRestaurantMenu(req.params.id, (err, data) => {
+    //   res.send(`DELETE requested at /api/restaurant/${req.params.restid}/menu/${req.params.menuid}`);
+    // })
   });
 
 const port = process.env.MENU_PORT || 8001;

@@ -1,66 +1,117 @@
-const postgres = require('postgres');
-
+const { Client } = require('pg')
 
 // https://www.npmjs.com/package/postgres
 
-const sql = postgres('postgres://postgres:password@localhost:5432/SDC', {
-  host        : '',         // Postgres ip address or domain name
-  port        : 5432,       // Postgres server port
-  path        : '',         // unix socket path (usually '/tmp')
-  database    : '',         // Name of database to connect to
-  username    : '',         // Username of database user
-  password    : '',         // Password of database user
-  ssl         : false,      // True, or options for tls.connect
-  max         : 10,         // Max number of connections
-  timeout     : 0,          // Idle connection timeout in seconds
-  types       : [],         // Array of custom types, see more below
-  onnotice    : fn          // Defaults to console.log
-  onparameter : fn          // (key, value) when server param change
-  debug       : fn          // Is called with (connection, query, parameters)
-  transform   : {
-    column            : fn, // Transforms incoming column names
-    value             : fn, // Transforms incoming row values
-    row               : fn  // Transforms entire rows
-  },
-  connection  : {
-    application_name  : 'postgres.js', // Default application_name
-    ...                                // Other connection parameters
-  }
-});
+// https://node-postgres.com/
+const restaurantdb = new Client()
 
-// with sections as (
-// 	select
-//         menu_id,
-//         json_agg(
-//             json_build_object(
-//                 'title', s.title,
-//                 'description', s.description
-//                 )
-//             ) sections
-//     from "Restaurants".sections s
-//     group by s.menu_id
-// ),
-// menus as (
-//     select
-//         restaurant_id,
-//         json_agg(
-//             json_build_object(
-//                 'title', m.title,
-//                 'description', m.description,
-// 				'sections', sections
-//                 )
-//             ) menus
-//     from "Restaurants".menus m
-// 	left join sections s on s.menu_id = m.id
-//     group by m.restaurant_id
-// )
-// select
-//     json_build_object(
-//                 'Rtitle', restaurants.title,
-//                 'Rdescription', restaurants.description,
-// 				'menus', menus
 
-//     ) restaurants
-// 	from "Restaurants".restaurants
-// 	left join menus m on m.restaurant_id = restaurants.id
-// 	where "Restaurants".restaurants.id = 10000
+
+const client = new Client({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'SDC',
+  password: 'postgres',
+  port: 5432,
+})
+
+client.connect()
+.then(() => {
+  console.log('Connected to database!')
+})
+.catch(err => {
+  if (err) throw err;
+})
+
+// restaurantdb.query('SELECT $1::text as message', ['Hello world!'], (err, res) => {
+//   console.log(err ? err.stack : res.rows[0].message) // Hello World!
+//   client.end()
+// })
+
+const getRestaurantMenu = (id, cb) => {
+  client.query(`
+      SELECT
+		MD5(title) _id,
+        restaurants.id id,
+        title,
+        description,
+         (
+           SELECT json_agg(row_to_json(m))
+           FROM (
+                  SELECT
+                    id menu_id,
+                    title,
+                    description,
+                    (
+                      SELECT json_agg(row_to_json(s))
+                      FROM (
+                             SELECT
+                               id section_id,
+                               title,
+                               (
+                                 SELECT json_agg(row_to_json(i))
+                                 FROM
+                                 (
+                                   SELECT
+                                    id item_id,
+                                    title,
+                                    price
+                                    FROM items
+                                    WHERE items.section_id = sections.id
+                                 ) i
+                               ) AS items
+                             FROM sections
+                             WHERE sections.menu_id = menus.id
+                           ) s
+                    ) AS sections
+                  FROM menus
+                  WHERE menus.restaurant_id = restaurants.id
+                ) m
+         ) AS menus
+       FROM restaurants
+  WHERE restaurants.id = $1
+  `, [id], (err, result) => {
+    if (err) {
+      cb(err, null);
+    }
+    cb(null, result.rows);
+  });
+};
+
+const putRestaurantMenu = (id, cb) => {
+
+};
+
+const deleteRestaurantMenu = (id, cb) => {
+
+};
+
+const getRestaurantTitle = (id, cb) => {
+  client.query('SELECT title FROM restaurants WHERE id = $1', [id], (err, result) => {
+    if (err) {
+      cb(err, null);
+    }
+    cb(null, result.rows[0].title);
+  })
+};
+
+const postRestaurant = (data, cb) => {
+
+
+};
+
+const putRestaurant = (data, cb) => {
+
+};
+
+const deleteRestaurant = (id, cb) => {
+
+};
+
+module.exports.postRestaurant = postRestaurant;
+module.exports.putRestaurant = putRestaurant;
+module.exports.deleteRestaurant = deleteRestaurant;
+module.exports.putRestaurantMenu = putRestaurantMenu;
+module.exports.deleteRestaurantMenu = deleteRestaurantMenu;
+module.exports.getRestaurantMenu = getRestaurantMenu;
+module.exports.getRestaurantTitle = getRestaurantTitle;
