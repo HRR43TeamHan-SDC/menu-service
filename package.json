@@ -14,8 +14,8 @@
   },
   "scripts": {
     "seed:files": "node ./database/seeder9000/threadedseeder.js",
-    "init:postgres": "psql SDC -f ./database/postgres/schema.sql",
-    "load:postgres": "psql SDC -f ./database/postgres/loadPostgres.sql",
+    "init:postgres": "sudo -u postgres psql sdc -f ./database/postgres/schema.sql",
+    "load:postgres": "sudo -u postgres psql sdc -f ./database/postgres/loadPostgres.sql",
     "start:postgres": "node ./server/postgres/index.js",
     "start:dev:postgres": "nodemon ./server/postgres/index.js",
     "init:neo4j": "echo 'TODO- setup the neo4j init script'",
@@ -29,7 +29,8 @@
     "mongo": "sudo service mongod start",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --colors"
+    "test:coverage": "jest --coverage --colors",
+    "stress": "artillery run artillery.yml"
   },
   "dependencies": {
     "@babel/core": "^7.8.3",
@@ -41,7 +42,6 @@
     "axios": "^0.19.2",
     "babel-jest": "^25.1.0",
     "babel-loader": "^8.0.6",
-    "concat": "^1.0.3",
     "cors": "^2.8.5",
     "css-loader": "^3.4.2",
     "csv-writer": "^1.6.0",

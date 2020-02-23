@@ -3,25 +3,43 @@ config:
   phases:
     - duration: 30
       arrivalRate: 10
-    - duration: 120
+    - duration: 300
       arrivalRate: 5
-      rampTo: 50
+      rampTo: 200
   defaults:
     headers:
       x-my-service-auth: '987401838271002188298567'
 scenarios:
   - flow:
     - get:
-        url: "/getmenu/10"
+        url: "/10"
     - get:
-        url: "/getmenu/100"
+        url: "/100"
     - get:
-        url: "/getmenu/1000"
+        url: "/1000"
     - get:
-        url: "/getmenu/10000"
+        url: "/10000"
     - get:
-        url: "/getmenu/100000"
+        url: "/100000"
     - get:
-        url: "/getmenu/1000000"
+        url: "/1000000"
     - get:
-        url: "/getmenu/10000000"
+        url: "/10000000"
+
+#         All virtual users finished
+# Summary report @ 19:46:58(-0600) 2020-02-21
+#   Scenarios launched:  31296
+#   Scenarios completed: 31296
+#   Requests completed:  438144
+#   RPS sent: 985.66
+#   Request latency:
+#     min: 0.6
+#     max: 146.1
+#     median: 14.3
+#     p95: 26.6
+#     p99: 36.8
+#   Scenario counts:
+#     0: 31296 (100%)
+#   Codes:
+#     200: 219072
+#     301: 219072

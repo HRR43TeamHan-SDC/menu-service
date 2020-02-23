@@ -1,6 +1,5 @@
 const { fork } = require('child_process');
 const os = require('os');
-const concat = require('concat');
 const fs = require('fs');
 const path = require('path')
 let cpuCount = os.cpus().length;
