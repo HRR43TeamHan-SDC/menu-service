@@ -173,7 +173,7 @@ const putRestaurantSection = (data, cb) => {
 
 const putRestaurantItem = (data, cb) => {
   client.query(`UPDATE items SET section_id=$2, title=$3, description=$4, price=$5 WHERE id=$1;`,
-    [data.id, , data.section_id, data.title, data.description, data.price],
+    [data.id, data.section_id, data.title, data.description, data.price],
     (err, result) => {
       if (err) {
         cb(err, null);
