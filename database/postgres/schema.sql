@@ -1,3 +1,5 @@
+
+CREATE DATABASE IF NOT EXISTS sdc;
 DROP TABLE items;
 DROP TABLE sections;
 DROP TABLE menus;
@@ -30,7 +32,7 @@ CREATE TABLE menus
     CONSTRAINT menus_restaurant_id_fkey FOREIGN KEY (restaurant_id)
         REFERENCES restaurants (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 );
 
 CREATE INDEX fki_menus_restaurant_id_fkey
@@ -54,7 +56,7 @@ CREATE TABLE sections
     CONSTRAINT sections_menu_id_fkey FOREIGN KEY (menu_id)
         REFERENCES menus (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 );
 
 CREATE INDEX fki_sections_menu_id_fkey
@@ -80,7 +82,7 @@ CREATE TABLE items
     CONSTRAINT items_section_id_fkey FOREIGN KEY (section_id)
         REFERENCES sections (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 );
 
 CREATE INDEX fki_items_section_id_fkey

@@ -2,7 +2,7 @@
 node_modules
 
 # generated CSV files
-database/datasets
+database/datasets/*
 
 # newrelic settings file and logs
 newrelic*
