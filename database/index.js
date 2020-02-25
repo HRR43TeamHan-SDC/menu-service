@@ -49,8 +49,6 @@ const postRestaurant = (data, cb) => {
 
 const putRestaurant = (data, cb) => {
   Restaurants.updateOne({id: data.id}, data, function (err) {
-    if (err) return handleError(err);
-    // deleted at most one restaurant document
     if (err) {
       cb(err, null);
       }

@@ -6,11 +6,12 @@ const { Client } = require('pg')
 const restaurantdb = new Client()
 
 const client = new Client({
-  user: 'postgres',
-  host: 'localhost',
+  user: process.env.POSTGRES_USER || 'postgres',
+  host: process.env.POSTGRES_HOST || 'localhost',
   database: 'sdc',
-  password: 'postgres',
-  port: 5432,
+  password: process.env.POSTGRES_PSWD || 'postgres',
+  port: process.env.POSTGRES_PORT || 5432,
+  application_name: 'menu_module'
 })
 
 client.connect()
@@ -61,6 +62,7 @@ const postRestaurantSection = (data, cb) => {
 };
 
 const postRestaurantItem = (data, cb) => {
+  console.log(data);
   client.query(`INSERT INTO items(section_id, title, description, price) VALUES ($1, $2, $3, $4) RETURNING id;`,
     [data.section_id, data.title, data.description, data.price],
     (err, result) => {
@@ -75,7 +77,17 @@ const postRestaurantItem = (data, cb) => {
 // READ functions
 // ------------------------------------------------------------
 
-const getRestaurantMenu = (id, cb) => {
+
+const getRestaurantTitle = (id, cb) => {
+  client.query('SELECT title FROM restaurants WHERE id = $1', [id], (err, result) => {
+    if (err) {
+      cb(err, null);
+    }
+    cb(null, result);
+  })
+};
+
+const getRestaurant = (id, cb) => {
   client.query(`
       SELECT
 		MD5(title) _id,
@@ -121,17 +133,35 @@ const getRestaurantMenu = (id, cb) => {
     if (err) {
       cb(err, null);
     }
-    cb(null, result.rows);
+    cb(null, result);
   });
 };
 
-const getRestaurantTitle = (id, cb) => {
-  client.query('SELECT title FROM restaurants WHERE id = $1', [id], (err, result) => {
-    if (err) {
-      cb(err, null);
-    }
-    cb(null, result.rows[0].title);
-  })
+const getRestaurantMenu = (id, cb) => {
+  client.query('SELECT * FROM menus WHERE id = $1', [id], (err, result) => {
+      if (err) {
+        cb(err, null);
+      }
+      cb(null, result);
+    });
+};
+
+const getRestaurantSection = (id, cb) => {
+  client.query('SELECT * FROM sections WHERE id = $1', [id], (err, result) => {
+      if (err) {
+        cb(err, null);
+      }
+      cb(null, result);
+    });
+};
+
+const getRestaurantItem = (id, cb) => {
+  client.query('SELECT * FROM items WHERE id = $1', [id], (err, result) => {
+      if (err) {
+        cb(err, null);
+      }
+      cb(null, result);
+    });
 };
 
 
@@ -229,8 +259,11 @@ module.exports.postRestaurantMenu = postRestaurantMenu;
 module.exports.postRestaurantSection = postRestaurantSection;
 module.exports.postRestaurantItem = postRestaurantItem;
 // READ
-module.exports.getRestaurantMenu = getRestaurantMenu;
 module.exports.getRestaurantTitle = getRestaurantTitle;
+module.exports.getRestaurant = getRestaurant;
+module.exports.getRestaurantMenu = getRestaurantMenu;
+module.exports.getRestaurantSection = getRestaurantSection;
+module.exports.getRestaurantItem = getRestaurantItem;
 // UPDATE
 module.exports.putRestaurant = putRestaurant;
 module.exports.putRestaurantMenu = putRestaurantMenu;

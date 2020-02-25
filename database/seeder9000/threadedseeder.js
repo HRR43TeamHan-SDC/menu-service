@@ -46,19 +46,19 @@ for (let i = 1; i <= maxThreads; i++) {
     if (restCSSArray.length === maxThreads) {
       restCSSArray.sort();
       restCSSArray.forEach((thread) => {
-        fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY restaurants (description, title) FROM '${path.join(__dirname,`../../database/datasets/restaurants${thread}.csv`)}' CSV HEADER;\n`, (err) => {
+        fs.appendFile(`./database/postgres/loadPostgres.sql`, `\\COPY restaurants (description, title) FROM '${path.join(__dirname,`../../database/datasets/restaurants${thread}.csv`)}' CSV HEADER;\n`, (err) => {
           if (err) {
             throw err;
           }
-          fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY menus (restaurant_id, description, title) FROM '${path.join(__dirname,`../../database/datasets/menus${thread}.csv`)}' CSV HEADER;\n`, (err) => {
+          fs.appendFile(`./database/postgres/loadPostgres.sql`, `\\COPY menus (restaurant_id, description, title) FROM '${path.join(__dirname,`../../database/datasets/menus${thread}.csv`)}' CSV HEADER;\n`, (err) => {
             if (err) {
               throw err;
             }
-            fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY sections (menu_id, title) FROM '${path.join(__dirname,`../../database/datasets/sections${thread}.csv`)}' CSV HEADER;\n`, (err) => {
+            fs.appendFile(`./database/postgres/loadPostgres.sql`, `\\COPY sections (menu_id, title) FROM '${path.join(__dirname,`../../database/datasets/sections${thread}.csv`)}' CSV HEADER;\n`, (err) => {
               if (err) {
                 throw err;
               }
-              fs.appendFile(`./database/postgres/loadPostgres.sql`, `COPY items (section_id, description, title, price) FROM '${path.join(__dirname,`../../database/datasets/items${thread}.csv`)}' CSV HEADER;\n`, (err) => {
+              fs.appendFile(`./database/postgres/loadPostgres.sql`, `\\COPY items (section_id, description, title, price) FROM '${path.join(__dirname,`../../database/datasets/items${thread}.csv`)}' CSV HEADER;\n`, (err) => {
                 if (err) {
                   throw err;
                 }
