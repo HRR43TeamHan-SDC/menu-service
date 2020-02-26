@@ -5,26 +5,29 @@ config:
       arrivalRate: 10
     - duration: 300
       arrivalRate: 5
-      rampTo: 200
+      rampTo: 2000
   defaults:
     headers:
       x-my-service-auth: '987401838271002188298567'
+  variables:
+      id:
+        - "10"
+        - "100"
+        - "1000"
+        - "10000"
+        - "100000"
+        - "1000000"
+        - "10000000"
+        - "50"
+        - "500"
+        - "5000"
+        - "50000"
+        - "500000"
+        - "5000000"
 scenarios:
   - flow:
     - get:
-        url: "/10"
-    - get:
-        url: "/100"
-    - get:
-        url: "/1000"
-    - get:
-        url: "/10000"
-    - get:
-        url: "/100000"
-    - get:
-        url: "/1000000"
-    - get:
-        url: "/10000000"
+        url: "/getmenu/{{id}}"
 
 #         All virtual users finished
 # Summary report @ 19:46:58(-0600) 2020-02-21

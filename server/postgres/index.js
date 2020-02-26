@@ -1,10 +1,12 @@
 require('newrelic');
+require('dotenv').config();
 var express = require('express');
 const db = require('./../../database/postgres/');
 const cors = require('cors');
 const path = require('path');
-
 const app = express();
+
+const MENUS_PORT = process.env.MENUS_PORT || 8001;
 
 app.use(cors());
 app.use(express.json());
@@ -13,7 +15,7 @@ app.use(express.json());
 //   res.header('Access-Control-Allow-Headers', '*');
 //   next();
 // });
-//app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 app.use('/bundle.js', express.static(path.resolve(__dirname, '../../public/bundle.js')));
 
@@ -21,9 +23,11 @@ app.use('/:id', express.static(path.resolve(__dirname, '../../public')));
 
 app.get('/getmenu/:id', (req, res) => {
   // console.log(`menu requesting id = ${req.params.id}`);
-  db.getRestaurantMenu(req.params.id, (err, result) => {
-    if (err) throw err;
-    res.status(200).json(result);
+  db.getRestaurant(req.params.id, (err, result) => {
+    if (err) {
+      res.status(500).send('Something Terrible happened')
+    }
+    res.status(200).json(result.rows);
   });
 });
 
@@ -33,10 +37,9 @@ app.get('/gettitle/:id', (req, res) => {
   // console.log(req.headers);
   db.getRestaurantTitle(req.params.id, (err, result) => {
     if (err) {
-      res.status(500).send('Something horrible happened')
+      res.status(500).send(err)
     }
-    res.set({ 'Access-Control-Allow-Origin': '*' });
-    res.status(200).json(result);
+    res.status(200).json(result.rows[0].title);
   });
 });
 
@@ -56,11 +59,19 @@ app.post('/api/restaurant/', (req, res) => {
 
 
 app.route('/api/restaurant/:id')
+  .get((req, res) => {
+    db.getRestaurant(req.params.id, (err, result) => {
+      if (err) {
+        res.status(500).send(err)
+      }
+      res.status(200).json(result.rows);
+    });
+  })
   .post((req, res) => {
     // POST a new menu to the restaurant with that id
     // db.postRestaurantMenu
     console.log(`POST requested at /api/restaurant/${req.params.id}`);
-    req.body.id = req.params.id;
+    req.body.restaurant_id = req.params.id;
     db.postRestaurantMenu(req.body, (err, result) => {
       if (err) {
         console.error(err);
@@ -77,9 +88,9 @@ app.route('/api/restaurant/:id')
     req.body.id = req.params.id;
     db.putRestaurant(req.body, (err, result) => {
       if (err) {
-        res.status(500).send('Something horrible happened');
+        res.status(500).send(err);
       }
-      res.send(result);
+      res.send(result.rows[0]);
     });
   })
   .delete((req, res) => {
@@ -89,17 +100,26 @@ app.route('/api/restaurant/:id')
     db.deleteRestaurant(req.params.id, (err, result) => {
       if (err) {
         console.error(err);
+        res.status(500).send(err);
       }
-      res.send(`DELETE ${result}`);
+      res.send(result.rows[0]);
     });
   });
 
 
 app.route('/api/menu/:id')
+  .get((req, res) => {
+    db.getRestaurantMenu(req.params.id, (err, result) => {
+      if (err) {
+        res.status(500).send('Something Terrible happened')
+      }
+      res.status(200).json(result.rows[0]);
+    });
+  })
   .post((req, res) => {
     //POST a new section to the menu
     // db.postRestaurantSection
-    req.body.id = req.params.id;
+    req.body.menu_id = req.params.id;
     db.postRestaurantSection(req.body, (err, result) => {
       if (err) {
         console.error(err);
@@ -118,7 +138,7 @@ app.route('/api/menu/:id')
         console.error(err);
         res.status(500).send(err);
       } else {
-        res.status(201).send(result);
+        res.status(201).send(result.rows[0]);
       }
     });
     console.log(`PUT requested at /api/menu/${req.params.id}`);
@@ -131,7 +151,7 @@ app.route('/api/menu/:id')
         console.error(err);
         res.status(500).send(err);
       } else {
-        res.status(201).send(result);
+        res.status(201).send(result.rows[0]);
       }
     });
     console.log(`DELETE requested at /api/menu/${req.params.id}`);
@@ -139,10 +159,18 @@ app.route('/api/menu/:id')
 
 
 app.route('/api/section/:id')
+  .get((req, res) => {
+    db.getRestaurantSection(req.params.id, (err, result) => {
+      if (err) {
+        res.status(500).send('Something Terrible happened')
+      }
+      res.status(200).json(result.rows[0]);
+    });
+  })
   .post((req, res) => {
     // POST a new item to the section
     //db.postRestaurantItem
-    req.body.id = req.params.id;
+    req.body.section_id = req.params.id;
     db.postRestaurantItem(req.body, (err, result) => {
       if (err) {
         console.error(err);
@@ -161,7 +189,7 @@ app.route('/api/section/:id')
         console.error(err);
         res.status(500).send(err);
       } else {
-        res.status(201).send(result);
+        res.status(201).send(result.rows[0]);
       }
     });
     console.log(`PUT requested at /api/section/${req.params.id}`);
@@ -174,7 +202,7 @@ app.route('/api/section/:id')
         console.error(err);
         res.status(500).send(err);
       } else {
-        res.status(201).send(result);
+        res.status(201).send(result.rows[0]);
       }
     });
     console.log(`DELETE requested at /api/section/${req.params.id}`);
@@ -182,6 +210,14 @@ app.route('/api/section/:id')
 
 
 app.route('/api/item/:id')
+  .get((req, res) => {
+    db.getRestaurantItem(req.params.id, (err, result) => {
+      if (err) {
+        res.status(500).send('Something Terrible happened')
+      }
+      res.status(200).json(result.rows[0]);
+    });
+  })
   .put((req, res) => {
     // db.putRestaurantItem
     req.body.id = req.params.id;
@@ -190,7 +226,7 @@ app.route('/api/item/:id')
         console.error(err);
         res.status(500).send(err);
       } else {
-        res.status(201).send(result);
+        res.status(201).send(result.rows[0]);
       }
     });
     console.log(`PUT requested at /api/item/${req.params.id}`);
@@ -203,14 +239,13 @@ app.route('/api/item/:id')
         console.error(err);
         res.status(500).send(err);
       } else {
-        res.status(201).send(result);
+        res.status(201).send(result.rows[0]);
       }
     });
     console.log(`DELETE requested at /api/item/${req.params.id}`);
   });
 
-const port = process.env.MENU_PORT || 8001;
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(MENUS_PORT, () => {
+  console.log(`App listening on port ${MENUS_PORT}`);
 });
