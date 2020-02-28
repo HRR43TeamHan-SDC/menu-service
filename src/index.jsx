@@ -9,7 +9,7 @@ const queryString = window.location.search;
 // const id = urlParams.get('id');
 const url = window.location.pathname.split('/');
 const id = url[1];
- console.log(`id = ${id}`);
+// console.log(`id = ${id}`);
 
 ReactDOM.render(<Title id={id} />, document.getElementById('title'));
 ReactDOM.render(<Menu id={id} />, document.getElementById('root'));
