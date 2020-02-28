@@ -1,7 +1,10 @@
 require('newrelic');
 require('dotenv').config();
+const zlib = require('zlib');
 var express = require('express');
+const fs = require('fs');
 const db = require('./../../database/postgres/');
+
 const cors = require('cors');
 const path = require('path');
 const app = express();
@@ -10,16 +13,33 @@ const MENUS_PORT = process.env.MENUS_PORT || 8001;
 
 app.use(cors());
 app.use(express.json());
+LOADERIO_VERIFY = process.env.LOADERIO_VERIFY;
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Headers', '*');
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Cache-Control', 'max-age=31536000')
+  next();
+});
 // app.use(express.urlencoded({ extended: true }));
 
-app.use('/bundle.js', express.static(path.resolve(__dirname, '../../public/bundle.js')));
+//app.use('/bundle.js', express.static(path.resolve(__dirname, '../../public/bundle.js')));
+
+//Updated to deliver zipped bundle however consider using Nginx to speed it up more....
+app.get(['/bundle.js', '/BrandonText-Regular.otf', '/styles.css'], (req, res) => {
+  const gzip = zlib.createGzip();
+  const bundle = fs.createReadStream(path.resolve(__dirname, `../../public/${req.url}`));
+  res.set({ 'Content-Encoding': 'gzip' });
+  bundle.pipe(gzip).pipe(res);
+});
 
 app.use('/:id', express.static(path.resolve(__dirname, '../../public')));
+
+if (LOADERIO_VERIFY) {
+  app.get(`/${LOADERIO_VERIFY}.txt`, (req, res) => {
+    res.send(`${LOADERIO_VERIFY}`)
+  });
+}
+
 
 app.get('/getmenu/:id', (req, res) => {
   // console.log(`menu requesting id = ${req.params.id}`);
